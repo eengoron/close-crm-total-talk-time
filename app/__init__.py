@@ -18,7 +18,7 @@ def export_job():
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(export_job, 'cron', hour=os.environ.get('JOB_HOUR'), minute='00')
+scheduler.add_job(export_job, 'cron', hour=os.environ.get('JOB_HOUR'), minute=os.environ.get('JOB_MINUTE'))
 scheduler.start()  
 
 app = Flask(__name__)
