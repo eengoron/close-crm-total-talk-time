@@ -2,7 +2,7 @@ from flask import Flask, session
 from app.methods import export_total_talk_time_per_lead_for_each_org
 import logging
 import os
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
 log = logging.getLogger('apscheduler.executors.default')
 log.setLevel(logging.INFO)  # DEBUG
@@ -12,16 +12,14 @@ h = logging.StreamHandler()
 h.setFormatter(fmt)
 log.addHandler(h)
 
-sched = BlockingScheduler()
-
 def export_job():
     export_total_talk_time_per_lead_for_each_org()
     print("Export of Talk Time Completed")
 
 
-sched.add_job(export_job, trigger='cron', hour=os.environ.get('JOB_HOUR'), minute='00')
-
-sched.start()  
+scheduler = BackgroundScheduler()
+scheduler.add_job(export_job, 'cron', hour=os.environ.get('JOB_HOUR'), minute='00')
+scheduler.start()  
 
 app = Flask(__name__)
 
